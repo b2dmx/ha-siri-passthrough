@@ -25,8 +25,13 @@ remote with a mic button, the companion app.
 1. HACS → ⋮ → **Custom repositories** → add this repo as an **Integration**
 2. Install **Siri Passthrough**, restart Home Assistant
 3. **Settings → Devices & Services → Add Integration → Siri Passthrough**
-4. Enter the bridge URL (default port `8477`)
+4. The bridge URL is filled in for you — the setup probes the addresses the
+   bridge can be on and keeps the first that answers. Just press Submit.
 
+> Nothing in the Home Assistant UI tells you this URL, because the add-on uses
+> host networking: it has no address of its own and no port-mapping page. The
+> control API is on the *host's* interfaces, port `8477`.
+>
 > If setup can't connect, the bridge's control API is probably still
 > loopback-only. Home Assistant runs in its own container, so it counts as a
 > different machine — enable `expose_control_api` on the add-on, or set

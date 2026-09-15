@@ -5,7 +5,8 @@ DOMAIN = "siri_passthrough"
 CONF_BRIDGE_URL = "bridge_url"
 CONF_TARGET = "target"
 
-DEFAULT_BRIDGE_URL = "http://homeassistant.local:8477"
+DEFAULT_PORT = 8477
+DEFAULT_BRIDGE_URL = f"http://homeassistant.local:{DEFAULT_PORT}"
 
 # What the appletv-siri-voice bridge and tvOS both expect. Home Assistant's
 # assist pipeline carries exactly this, so nothing in the chain resamples --

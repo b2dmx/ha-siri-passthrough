@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
-import aiohttp
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import CONF_BRIDGE_URL, CONF_TARGET, DEFAULT_BRIDGE_URL, DOMAIN
+from .discovery import find_bridge, probe
 
 
 class SiriPassthroughConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -18,23 +17,22 @@ class SiriPassthroughConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    def __init__(self) -> None:
+        self._suggested: str | None = None
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         errors: dict[str, str] = {}
 
+        if self._suggested is None:
+            # Probe before drawing the form, so the field is pre-filled with a
+            # URL that actually works rather than one the user has to derive.
+            self._suggested = await find_bridge(self.hass)
+
         if user_input is not None:
             url = str(user_input[CONF_BRIDGE_URL]).rstrip("/")
-            try:
-                session = async_get_clientsession(self.hass)
-                async with session.get(
-                    f"{url}/state", timeout=aiohttp.ClientTimeout(total=10)
-                ) as resp:
-                    if resp.status >= 400:
-                        errors["base"] = "cannot_connect"
-                    else:
-                        await resp.json(content_type=None)
-            except (aiohttp.ClientError, TimeoutError):
+            if not await probe(self.hass, url):
                 # The most common cause by far is the add-on's control API still
                 # being loopback-only. Home Assistant runs in its own container,
                 # so it counts as "a different machine" for that setting.
@@ -55,7 +53,7 @@ class SiriPassthroughConfigFlow(ConfigFlow, domain=DOMAIN):
                     vol.Required(
                         CONF_BRIDGE_URL,
                         default=(user_input or {}).get(
-                            CONF_BRIDGE_URL, DEFAULT_BRIDGE_URL
+                            CONF_BRIDGE_URL, self._suggested or DEFAULT_BRIDGE_URL
                         ),
                     ): str,
                     vol.Optional(CONF_TARGET): vol.Coerce(int),
