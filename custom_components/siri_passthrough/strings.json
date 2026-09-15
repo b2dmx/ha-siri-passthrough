@@ -16,5 +16,19 @@
     "abort": {
       "already_configured": "That bridge is already set up."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Routing",
+        "description": "Leave the entity blank to send every utterance to Siri. Set it, and an utterance only goes to Siri while that entity is in one of the listed states -- anything else is handed to the fallback engine and answered by the fallback agent, so one pipeline serves both the television and the house.",
+        "data": {
+          "siri_when_entity": "Send to Siri while this entity is...",
+          "siri_when_states": "...in one of these states (comma separated)",
+          "fallback_stt": "Otherwise recognise with",
+          "fallback_agent": "Otherwise answer with"
+        }
+      }
+    }
   }
 }

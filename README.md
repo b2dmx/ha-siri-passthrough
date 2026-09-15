@@ -53,8 +53,19 @@ Make a pipeline for Siri:
 Point a satellite at that pipeline and hold its mic button. Siri answers on the
 TV, exactly as it would from the Siri Remote.
 
-Keep your normal assistant as a second pipeline and switch between them to
-choose who you're talking to — the house, or the television.
+## One pipeline for both
+
+You can leave the satellite on this pipeline permanently and let it decide.
+
+**Settings → Devices & Services → Siri Passthrough → Configure**, then set an
+entity and the states it should be in — `media_player.apple_tv_4k` being `on`,
+say. While that holds, the mic goes to Siri. Otherwise the same live audio is
+handed to your normal speech-to-text engine and answered by your normal agent,
+and it is an ordinary Assist command.
+
+The check is a states read taken before the first chunk of audio is consumed,
+so the Siri path is exactly as fast with routing on as with it off. Nothing is
+buffered, and nothing is tried-then-retried.
 
 ## How it works
 

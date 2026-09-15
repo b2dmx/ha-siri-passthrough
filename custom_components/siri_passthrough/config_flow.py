@@ -6,9 +6,25 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
+from homeassistant.core import callback
+from homeassistant.helpers import selector
 
-from .const import CONF_BRIDGE_URL, CONF_TARGET, DEFAULT_BRIDGE_URL, DOMAIN
+from .const import (
+    CONF_BRIDGE_URL,
+    CONF_FALLBACK_AGENT,
+    CONF_FALLBACK_STT,
+    CONF_SIRI_WHEN_ENTITY,
+    CONF_SIRI_WHEN_STATES,
+    DEFAULT_BRIDGE_URL,
+    DEFAULT_SIRI_WHEN_STATES,
+    DOMAIN,
+)
 from .discovery import find_bridge, probe
 
 
@@ -16,6 +32,11 @@ class SiriPassthroughConfigFlow(ConfigFlow, domain=DOMAIN):
     """Ask for the bridge URL, and check something answers on it."""
 
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        return SiriPassthroughOptionsFlow()
 
     def __init__(self) -> None:
         self._suggested: str | None = None
@@ -60,4 +81,45 @@ class SiriPassthroughConfigFlow(ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
+        )
+
+
+def routing_schema(current: dict) -> vol.Schema:
+    """Fields for deciding which utterances belong to Siri."""
+    return vol.Schema(
+        {
+            vol.Optional(
+                CONF_SIRI_WHEN_ENTITY,
+                description={"suggested_value": current.get(CONF_SIRI_WHEN_ENTITY)},
+            ): selector.EntitySelector(),
+            vol.Optional(
+                CONF_SIRI_WHEN_STATES,
+                default=current.get(CONF_SIRI_WHEN_STATES, DEFAULT_SIRI_WHEN_STATES),
+            ): str,
+            vol.Optional(
+                CONF_FALLBACK_STT,
+                description={"suggested_value": current.get(CONF_FALLBACK_STT)},
+            ): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="stt")
+            ),
+            vol.Optional(
+                CONF_FALLBACK_AGENT,
+                description={"suggested_value": current.get(CONF_FALLBACK_AGENT)},
+            ): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="conversation")
+            ),
+        }
+    )
+
+
+class SiriPassthroughOptionsFlow(OptionsFlow):
+    """Change routing after setup."""
+
+    async def async_step_init(self, user_input=None) -> ConfigFlowResult:
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        current = {**self.config_entry.data, **self.config_entry.options}
+        return self.async_show_form(
+            step_id="init", data_schema=routing_schema(current)
         )

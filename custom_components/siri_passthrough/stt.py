@@ -29,10 +29,12 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     CONF_BRIDGE_URL,
+    CONF_FALLBACK_STT,
     CONF_TARGET,
     DOMAIN,
     SENTINEL_TRANSCRIPT,
 )
+from .routing import wants_siri
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,6 +69,7 @@ class SiriPassthroughSTT(stt.SpeechToTextEntity):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         data = hass.data[DOMAIN][entry.entry_id]
+        self._conf = data
         self._session = async_get_clientsession(hass)
         self._url = str(data[CONF_BRIDGE_URL]).rstrip("/")
         self._target = data.get(CONF_TARGET)
@@ -99,6 +102,35 @@ class SiriPassthroughSTT(stt.SpeechToTextEntity):
     async def async_process_audio_stream(
         self, metadata: stt.SpeechMetadata, stream: AsyncIterable[bytes]
     ) -> stt.SpeechResult:
+        """Send this utterance to Siri, or hand it to a real recogniser."""
+        # Taken before a single chunk is read, so the Siri path is unchanged by
+        # the existence of routing.
+        if not wants_siri(self.hass, self._conf):
+            return await self._delegate(metadata, stream)
+
+        return await self._to_siri(stream)
+
+    async def _delegate(
+        self, metadata: stt.SpeechMetadata, stream: AsyncIterable[bytes]
+    ) -> stt.SpeechResult:
+        """Let another speech-to-text engine have the stream instead."""
+        engine_id = self._conf.get(CONF_FALLBACK_STT)
+        if not engine_id:
+            _LOGGER.warning(
+                "Routing says this utterance is not for Siri, but no fallback "
+                "speech-to-text engine is configured; discarding it"
+            )
+            return stt.SpeechResult("", stt.SpeechResultState.ERROR)
+
+        engine = stt.async_get_speech_to_text_entity(self.hass, engine_id)
+        if engine is None:
+            _LOGGER.error("Fallback speech-to-text engine %s not found", engine_id)
+            return stt.SpeechResult("", stt.SpeechResultState.ERROR)
+
+        _LOGGER.debug("Not for Siri; handing the stream to %s", engine_id)
+        return await engine.async_process_audio_stream(metadata, stream)
+
+    async def _to_siri(self, stream: AsyncIterable[bytes]) -> stt.SpeechResult:
         """Forward the live audio to Siri and return a sentinel transcript."""
         path = "/siri/stream"
         if self._target is not None:

@@ -29,7 +29,12 @@ PLATFORMS: list[Platform] = [Platform.STT, Platform.CONVERSATION]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Siri Passthrough from a config entry."""
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = dict(entry.data)
+    # Options win over the values captured at setup, so routing can be
+    # changed later without removing and re-adding the integration.
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
+        **entry.data,
+        **{k: v for k, v in entry.options.items() if v not in (None, "")},
+    }
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_reload_on_change))
     return True
