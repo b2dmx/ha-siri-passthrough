@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.1
+
+- Show something on screen: the placeholder transcript is now "Asked Siri"
+  rather than a marker string, so a satellite that displays recognised text has
+  a readable status line instead of nothing.
+
+
 ## v0.3.0
 
 - Route per utterance, so one pipeline can serve both the television and the

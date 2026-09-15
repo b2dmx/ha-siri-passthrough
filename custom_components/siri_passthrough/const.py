@@ -27,6 +27,10 @@ SAMPLE_RATE = 16000
 BYTES_PER_MS = 32
 
 # Returned as the "transcript" so the pipeline has something non-empty to carry
-# into the conversation stage. Nothing ever reads it: the audio already went to
-# Siri, and the bundled quiet agent answers with silence.
-SENTINEL_TRANSCRIPT = "(sent to siri)"
+# into the conversation stage, and so a satellite that displays the recognised
+# text has something to show. Nothing acts on it: the audio already went to
+# Siri, and the bundled agent answers it with silence.
+#
+# Kept human-readable rather than a marker string for exactly that reason -- on
+# a screen it reads as a status line instead of debug output.
+SENTINEL_TRANSCRIPT = "Asked Siri"
