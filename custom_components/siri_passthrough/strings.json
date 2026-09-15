@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Siri Passthrough",
+        "description": "Point this at the Apple TV Siri Voice bridge. Leave the target blank unless you have more than one Apple TV paired.",
+        "data": {
+          "bridge_url": "Bridge URL",
+          "target": "Apple TV target (optional)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nothing answered on that URL. If the bridge runs as an add-on, check that its control API is exposed -- Home Assistant is a separate container, so it counts as a different machine."
+    },
+    "abort": {
+      "already_configured": "That bridge is already set up."
+    }
+  }
+}
