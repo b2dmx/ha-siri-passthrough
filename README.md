@@ -13,9 +13,13 @@ your voice straight through to Siri while you are still talking.
 
 ## Requirements
 
+- An Apple TV on tvOS 12 or later, on the same network
+- Home Assistant 2024.6 or newer, with
+  [HACS](https://hacs.xyz/docs/use/download/download/) installed
 - The [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice)
-  bridge, paired with your Apple TV
-- Home Assistant 2024.6 or newer
+  bridge — install it by following the
+  **[setup guide](docs/setup.md)**, which explains which build to use and why
+- An iPhone or iPad, to pair the bridge in the **Home** app
 
 ## Install
 
