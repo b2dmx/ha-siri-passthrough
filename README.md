@@ -56,3 +56,7 @@ Built with [Claude Code](https://claude.com/claude-code). Not affiliated with
 Apple or Home Assistant.
 
 [MIT](LICENSE) · [Changelog](CHANGELOG.md)
+
+---
+
+If this saved you some time: [buy me a coffee](https://ko-fi.com/goobis2dmx) ☕
