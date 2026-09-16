@@ -6,12 +6,28 @@ Two pieces: the bridge (a Home Assistant add-on) and this integration.
 
 The bridge pairs as a HomeKit remote and is what actually reaches Siri.
 
-Add-on store → ⋮ → **Repositories** → add the bridge repository, then install
-**Apple TV Siri Voice Bridge**. It builds from source, so give it a few minutes.
+**Settings → Add-ons → Add-on Store → ⋮ → Repositories**, and add:
+
+```
+https://github.com/b2dmx/appletv-siri-voice
+```
+
+Then install **Apple TV Siri Voice Bridge**. It builds from source, so give it
+a few minutes.
+
+> **Why that address and not the original project?** The original add-on cannot
+> currently be built by Home Assistant — its Dockerfile refers to files that are
+> not in the build folder, so installing it fails immediately. It also cannot be
+> paired, because it restarts its own HomeKit accessory partway through pairing.
+> Both fixes are offered upstream in
+> [PR #2](https://github.com/marcusadolfsson/appletv-siri-voice/pull/2); the
+> address above is the same project with those two fixes applied. Once the
+> upstream project merges them, use
+> `https://github.com/marcusadolfsson/appletv-siri-voice` instead.
 
 ### Before you start it
 
-Set **`expose_control_api: true`**. Home Assistant runs in its own container, so
+Open the add-on's **Configuration** tab and set **`expose_control_api: true`**. Home Assistant runs in its own container, so
 it counts as "a different machine" for that setting, and without it this
 integration cannot reach the bridge.
 
@@ -35,7 +51,13 @@ reopens the stream when tvOS drops it in normal use.
 
 ## 2. This integration
 
-HACS → ⋮ → **Custom repositories** → add as **Integration** → install → restart.
+**HACS → ⋮ → Custom repositories**, add:
+
+```
+https://github.com/b2dmx/ha-siri-passthrough
+```
+
+with category **Integration**. Install it, then restart Home Assistant.
 
 Then **Settings → Devices & Services → Add Integration → Siri Passthrough**.
 
