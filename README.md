@@ -23,19 +23,19 @@ hops.
 2. Install, restart Home Assistant
 3. **Settings → Devices & Services → Add Integration → Siri Passthrough**
 
-The bridge URL is detected for you. **[Full setup guide →](docs/setup.md)**
+Setup walks the rest: it finds the bridge, waits until an Apple TV is paired
+with it, and offers to build the pipeline for you.
+
+**[Full setup guide →](docs/setup.md)**
 
 ## Use it
 
-Build a pipeline under **Settings → Voice assistants**:
+Point a satellite at the pipeline and hold its mic button. Siri answers on the
+TV.
 
-| Stage | Pick |
-|---|---|
-| Speech-to-text | **Siri passthrough** |
-| Conversation agent | **Siri passthrough (silent)** |
-| Text-to-speech | anything (unused) |
-
-Point a satellite at it and hold the mic. Siri answers on the TV.
+If anything in the chain breaks later — the bridge stops answering, the pairing
+is lost, no pipeline is using it — it shows up in **Repairs** saying which,
+rather than the mic silently doing nothing.
 
 ## One pipeline for both
 

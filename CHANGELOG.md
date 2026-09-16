@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4.0
+
+- Guided setup. The flow now finds the bridge, waits for an Apple TV to be
+  paired with it (explaining the `-6718` pairing trap if it is hit), and offers
+  to build the assist pipeline wired to the right pair of entities.
+- Repairs entries when the chain breaks: bridge unreachable, nothing paired, or
+  no pipeline using the provider. Checked every 15 minutes, cleared when fixed.
+  Previously all three failed silently — the microphone just did nothing.
+
 ## v0.3.1
 
 - Show something on screen: the placeholder transcript is now "Asked Siri"

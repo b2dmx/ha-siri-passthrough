@@ -59,6 +59,19 @@ def candidate_urls(hass: HomeAssistant) -> list[str]:
     ]
 
 
+async def read_state(hass: HomeAssistant, url: str) -> dict | None:
+    """The bridge's /state, or None if it cannot be read."""
+    session = async_get_clientsession(hass)
+    try:
+        async with session.get(f"{url}/state", timeout=_PROBE_TIMEOUT) as resp:
+            if resp.status >= 400:
+                return None
+            body = await resp.json(content_type=None)
+    except (aiohttp.ClientError, asyncio.TimeoutError, ValueError):
+        return None
+    return body if isinstance(body, dict) else None
+
+
 async def probe(hass: HomeAssistant, url: str) -> bool:
     """True if something that looks like the bridge answers on this URL."""
     session = async_get_clientsession(hass)

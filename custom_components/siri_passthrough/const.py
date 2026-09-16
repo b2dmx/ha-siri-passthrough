@@ -17,6 +17,12 @@ CONF_FALLBACK_AGENT = "fallback_agent"
 
 DEFAULT_SIRI_WHEN_STATES = "on, playing, paused"
 
+# Consumed once, after setup: the entities have to exist before a pipeline can
+# name them, so the flow records the intent and setup acts on it.
+CONF_CREATE_PIPELINE = "create_pipeline"
+CONF_PIPELINE_NAME = "pipeline_name"
+DEFAULT_PIPELINE_NAME = "Siri"
+
 DEFAULT_PORT = 8477
 DEFAULT_BRIDGE_URL = f"http://homeassistant.local:{DEFAULT_PORT}"
 

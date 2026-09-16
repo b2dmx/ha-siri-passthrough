@@ -3,15 +3,32 @@
     "step": {
       "user": {
         "title": "Siri Passthrough",
-        "description": "Point this at the Apple TV Siri Voice bridge. Leave the target blank unless you have more than one Apple TV paired.",
+        "description": "Point this at the Apple TV Siri Voice bridge. The address is filled in for you if it can be found. Leave the target blank unless more than one Apple TV is paired.",
         "data": {
           "bridge_url": "Bridge URL",
           "target": "Apple TV target (optional)"
         }
+      },
+      "pair": {
+        "title": "Pair the bridge",
+        "description": "The bridge is answering, but no Apple TV is paired with it yet, so there is nothing for Siri to speak through.\n\nOn your iPhone: **Home** app → **+** → **Add Accessory** → **More options…** → pick **Voice Remote**, and enter the setup code from the add-on's log.\n\nIf pairing fails with OSStatus -6718, turn on the add-on's **pairing_mode** option and restart it — its recovery re-publishes the accessory and breaks pairing partway through.\n\nSubmit once it is paired."
+      },
+      "finish": {
+        "title": "Pipeline and routing",
+        "description": "A pipeline pairs the two entities this integration provides. Building it here avoids the usual mistake of pointing a pipeline at the wrong pair.\n\nRouting is optional: leave the entity blank to send every utterance to Siri, or name one and an utterance only goes to Siri while that entity is in one of the listed states — anything else becomes an ordinary Assist command.",
+        "data": {
+          "create_pipeline": "Create an assist pipeline",
+          "pipeline_name": "Pipeline name",
+          "siri_when_entity": "Send to Siri while this entity is…",
+          "siri_when_states": "…in one of these states (comma separated)",
+          "fallback_stt": "Otherwise recognise with",
+          "fallback_agent": "Otherwise answer with"
+        }
       }
     },
     "error": {
-      "cannot_connect": "Nothing answered on that URL. If the bridge runs as an add-on, check that its control API is exposed -- Home Assistant is a separate container, so it counts as a different machine."
+      "cannot_connect": "Nothing answered on that URL. If the bridge runs as an add-on, check that its control API is exposed — Home Assistant is a separate container, so it counts as a different machine.",
+      "still_unpaired": "Still no Apple TV paired. Check the add-on's log, and that the phone is on the same network as Home Assistant — HomeKit pairing uses mDNS and does not cross networks."
     },
     "abort": {
       "already_configured": "That bridge is already set up."
@@ -21,14 +38,28 @@
     "step": {
       "init": {
         "title": "Routing",
-        "description": "Leave the entity blank to send every utterance to Siri. Set it, and an utterance only goes to Siri while that entity is in one of the listed states -- anything else is handed to the fallback engine and answered by the fallback agent, so one pipeline serves both the television and the house.",
+        "description": "Leave the entity blank to send every utterance to Siri. Set it, and an utterance only goes to Siri while that entity is in one of the listed states — anything else is handed to the fallback engine and answered by the fallback agent, so one pipeline serves both the television and the house.",
         "data": {
-          "siri_when_entity": "Send to Siri while this entity is...",
-          "siri_when_states": "...in one of these states (comma separated)",
+          "siri_when_entity": "Send to Siri while this entity is…",
+          "siri_when_states": "…in one of these states (comma separated)",
           "fallback_stt": "Otherwise recognise with",
           "fallback_agent": "Otherwise answer with"
         }
       }
+    }
+  },
+  "issues": {
+    "bridge_unreachable": {
+      "title": "The Siri bridge is not answering",
+      "description": "Nothing answered at {url}. Siri cannot be reached until it does.\n\nUsually the add-on is stopped, or its control API is no longer exposed — Home Assistant runs in its own container, so it needs the API bound beyond loopback."
+    },
+    "bridge_unpaired": {
+      "title": "No Apple TV is paired with the Siri bridge",
+      "description": "The bridge is running but no Apple TV is paired with it, so an utterance has nowhere to go.\n\nPair it from the Home app: **+** → **Add Accessory** → **More options…** → **Voice Remote**. If pairing fails with OSStatus -6718, turn on the add-on's pairing_mode option first."
+    },
+    "no_pipeline": {
+      "title": "No assist pipeline uses Siri Passthrough",
+      "description": "The speech-to-text provider is registered but no pipeline is using it, so holding a microphone button will not reach Siri.\n\nUnder Settings → Voice assistants, set a pipeline's speech-to-text to **Siri passthrough** and its conversation agent to **Siri passthrough (silent)**."
     }
   }
 }
