@@ -122,6 +122,15 @@ class SiriPassthroughSTT(stt.SpeechToTextEntity):
             )
             return stt.SpeechResult("", stt.SpeechResultState.ERROR)
 
+        if engine_id == self.entity_id:
+            # Pointing the fallback at this provider would recurse until the
+            # stream or the stack gave out.
+            _LOGGER.error(
+                "Fallback speech-to-text is set to this same entity (%s); "
+                "choose a real recogniser", engine_id
+            )
+            return stt.SpeechResult("", stt.SpeechResultState.ERROR)
+
         engine = stt.async_get_speech_to_text_entity(self.hass, engine_id)
         if engine is None:
             _LOGGER.error("Fallback speech-to-text engine %s not found", engine_id)

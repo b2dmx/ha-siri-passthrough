@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.4.2
+
+- Fix pipeline creation and the "no pipeline" check, which both called an
+  `assist_pipeline` helper that does not exist. Their guards caught the error,
+  so neither crashed — they just quietly did nothing, which is worse. They now
+  use the supported accessors, and declare `assist_pipeline` as a dependency.
+- Refuse a fallback speech-to-text engine or conversation agent that points at
+  this integration's own entity, which would have recursed until the stream or
+  the stack gave out.
+- Find our own speech-to-text entity through the entity registry rather than by
+  matching an entity-id prefix, so renaming it does not break the check.
+
 ## v0.4.1
 
 - Fix a thread-safety warning: the periodic health check scheduled itself with

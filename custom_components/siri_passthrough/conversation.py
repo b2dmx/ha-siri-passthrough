@@ -55,6 +55,14 @@ class RouterAgent(conversation.ConversationEntity):
         text = (user_input.text or "").strip()
         agent_id = self._conf.get(CONF_FALLBACK_AGENT)
 
+        if agent_id == self.entity_id:
+            # Delegating to ourselves would recurse forever.
+            _LOGGER.error(
+                "Fallback conversation agent is set to this same entity (%s); "
+                "choose a real agent", agent_id
+            )
+            agent_id = None
+
         if text != SENTINEL_TRANSCRIPT and agent_id:
             # A real sentence, recognised by the fallback engine.
             _LOGGER.debug("Passing %r to %s", text, agent_id)

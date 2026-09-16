@@ -9,8 +9,9 @@ from __future__ import annotations
 
 import logging
 
+from homeassistant.components.assist_pipeline.pipeline import async_get_pipelines
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers import entity_registry as er, issue_registry as ir
 
 from .const import CONF_BRIDGE_URL, DOMAIN
 from .discovery import probe
@@ -38,26 +39,24 @@ async def _bridge_state(hass: HomeAssistant, url: str) -> dict | None:
         return None
 
 
-def _pipeline_uses_us(hass: HomeAssistant) -> bool:
+def _our_stt_entity(hass: HomeAssistant, entry_id: str) -> str | None:
+    """Our speech-to-text entity id, by registry lookup rather than by guess."""
+    return er.async_get(hass).async_get_entity_id("stt", DOMAIN, f"{entry_id}-stt")
+
+
+def _pipeline_uses_us(hass: HomeAssistant, entry_id: str) -> bool:
     """True if some assist pipeline is wired to our speech-to-text entity."""
+    ours = _our_stt_entity(hass, entry_id)
+    if ours is None:
+        return True  # not registered yet; nothing to report
+
     try:
-        from homeassistant.components.assist_pipeline.pipeline import (
-            async_get_pipeline_store,
-        )
-
-        store = async_get_pipeline_store(hass)
-    except Exception:  # noqa: BLE001 -- internal API; absence is not a failure
-        return True  # cannot tell, so do not nag
-
-    stt_ids = {
-        s.entity_id
-        for s in hass.states.async_all("stt")
-        if s.entity_id.startswith("stt.siri_passthrough")
-    }
-    if not stt_ids:
+        pipelines = async_get_pipelines(hass)
+    except Exception as err:  # noqa: BLE001 -- cannot tell, so do not nag
+        _LOGGER.debug("Could not read the pipelines (%s)", err)
         return True
 
-    return any(p.stt_engine in stt_ids for p in store.data.values())
+    return any(p.stt_engine == ours for p in pipelines)
 
 
 async def async_check(hass: HomeAssistant, entry_id: str) -> None:
@@ -84,4 +83,4 @@ async def async_check(hass: HomeAssistant, entry_id: str) -> None:
 
     issue(ISSUE_UNREACHABLE, False)
     issue(ISSUE_UNPAIRED, not state.get("targets"))
-    issue(ISSUE_NO_PIPELINE, not _pipeline_uses_us(hass))
+    issue(ISSUE_NO_PIPELINE, not _pipeline_uses_us(hass, entry_id))

@@ -3,10 +3,10 @@
   "name": "Siri Passthrough",
   "codeowners": ["@b2dmx"],
   "config_flow": true,
-  "dependencies": ["stt", "conversation"],
+  "dependencies": ["stt", "conversation", "assist_pipeline"],
   "documentation": "https://github.com/b2dmx/ha-siri-passthrough",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/b2dmx/ha-siri-passthrough/issues",
   "requirements": [],
-  "version": "0.4.1"
+  "version": "0.4.2"
 }
