@@ -1,5 +1,7 @@
 # Siri Passthrough
 
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/goobis2dmx)
+
 Talk to **Siri on your Apple TV** through any Home Assistant voice satellite —
 live, while you're still speaking.
 
