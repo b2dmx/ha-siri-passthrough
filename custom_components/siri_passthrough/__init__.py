@@ -54,12 +54,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await _create_pipeline(hass, entry)
 
     await health.async_check(hass, entry.entry_id)
+
+    async def _recheck(_now) -> None:
+        # A coroutine function handed straight to the tracker: it is awaited on
+        # the event loop. Wrapping it in async_create_task from the callback
+        # schedules from whatever thread fired the timer, which is not safe.
+        await health.async_check(hass, entry.entry_id)
+
     entry.async_on_unload(
-        async_track_time_interval(
-            hass, lambda _now: hass.async_create_task(
-                health.async_check(hass, entry.entry_id)
-            ), CHECK_INTERVAL
-        )
+        async_track_time_interval(hass, _recheck, CHECK_INTERVAL)
     )
     entry.async_on_unload(entry.add_update_listener(_reload_on_change))
     return True

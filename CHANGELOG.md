@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.1
+
+- Fix a thread-safety warning: the periodic health check scheduled itself with
+  `hass.async_create_task` from the timer callback. The check now runs as a
+  coroutine awaited on the event loop.
+
 ## v0.4.0
 
 - Guided setup. The flow now finds the bridge, waits for an Apple TV to be
