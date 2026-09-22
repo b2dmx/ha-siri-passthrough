@@ -17,8 +17,8 @@ your voice straight through to Siri while you are still talking.
 - Home Assistant 2024.6 or newer, with
   [HACS](https://hacs.xyz/docs/use/download/download/) installed
 - The [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice)
-  bridge — install it by following the
-  **[setup guide](docs/setup.md)**, which explains which build to use and why
+  bridge add-on, 1.0.2 or newer — the **[setup guide](docs/setup.md)** walks
+  through installing and pairing it
 - An iPhone or iPad, to pair the bridge in the **Home** app
 
 ## Install

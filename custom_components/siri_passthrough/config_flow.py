@@ -93,9 +93,8 @@ class SiriPassthroughConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             url = str(user_input[CONF_BRIDGE_URL]).rstrip("/")
             if not await probe(self.hass, url):
-                # Almost always the add-on's control API still being loopback
-                # only. Home Assistant is its own container, so it counts as a
-                # different machine for that setting.
+                # Usually the add-on is not running, or the bridge lives on
+                # another machine and this is not its address.
                 errors["base"] = "cannot_connect"
             else:
                 await self.async_set_unique_id(url)

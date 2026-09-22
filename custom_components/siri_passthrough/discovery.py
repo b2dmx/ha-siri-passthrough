@@ -1,14 +1,18 @@
 """Work out where the bridge is, so the user does not have to.
 
-There is no way to look this up in the Home Assistant UI. The add-on runs with
-host networking, so it has no address of its own and no port-mapping page --
-the control API is simply on the *host's* interfaces, on the bridge's built-in
-default port. Upstream's own integration defaults to 127.0.0.1, which is only
-correct when Home Assistant Core runs on that same host OS; on Home Assistant OS
-the add-on and Core are different containers and that address is wrong.
+The add-on binds its control API to 127.0.0.1, and Home Assistant Core reaches
+it there: on Home Assistant OS, Supervised and the usual Docker install, Core
+runs with host networking and shares the host's loopback with the add-on. So
+loopback is tried first. The others exist for a bridge that runs somewhere
+else -- a standalone container on another machine, say -- and are only reached
+if loopback does not answer.
 
-So rather than document a derivation, probe the handful of addresses the bridge
-can plausibly be on and keep the first that answers.
+A note on the order, learned the hard way: with the bridge briefly bound to
+every interface, any candidate answers, and whichever comes first is what gets
+saved. An earlier version of this list put ``homeassistant.local`` ahead of
+loopback; the saved URL then resolved (from inside Core) to the Supervisor
+gateway, and the moment the bridge went back to loopback-only, Siri stopped.
+Loopback first makes the saved URL the one that keeps working.
 """
 
 from __future__ import annotations
@@ -31,25 +35,23 @@ _PROBE_TIMEOUT = aiohttp.ClientTimeout(total=2)
 
 def candidate_urls(hass: HomeAssistant) -> list[str]:
     """Addresses the bridge could be reachable on, best guess first."""
-    hosts: list[str] = []
+    hosts: list[str] = [
+        # Where the add-on listens, and where Core reaches it on every same-host
+        # install. Always first -- see the module docstring for why.
+        "127.0.0.1",
+        # The Supervisor network's host side, for a Core that is somehow not
+        # host-networked.
+        "172.30.32.1",
+        "homeassistant.local",
+    ]
 
-    # Whatever Home Assistant believes it is reachable as: on Home Assistant OS
-    # this is the host the add-on is bound to.
+    # Whatever Home Assistant believes it is reachable as, for a bridge that
+    # runs on a different machine and was pointed at from there.
     for url in (hass.config.internal_url, hass.config.external_url):
         if url:
             host = urlsplit(url).hostname
             if host:
                 hosts.append(host)
-
-    hosts.extend(
-        [
-            "homeassistant.local",
-            # Core / Supervised, where the add-on shares the host with HA.
-            "127.0.0.1",
-            # The Supervisor network's host side, for host-networked add-ons.
-            "172.30.32.1",
-        ]
-    )
 
     seen: set[str] = set()
     return [

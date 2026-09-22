@@ -15,7 +15,7 @@ CONF_SIRI_WHEN_STATES = "siri_when_states"
 CONF_FALLBACK_STT = "fallback_stt"
 CONF_FALLBACK_AGENT = "fallback_agent"
 
-DEFAULT_SIRI_WHEN_STATES = "on, playing, paused"
+DEFAULT_SIRI_WHEN_STATES = "on, idle, playing, paused"
 
 # Consumed once, after setup: the entities have to exist before a pipeline can
 # name them, so the flow records the intent and setup acts on it.
@@ -24,7 +24,7 @@ CONF_PIPELINE_NAME = "pipeline_name"
 DEFAULT_PIPELINE_NAME = "Siri"
 
 DEFAULT_PORT = 8477
-DEFAULT_BRIDGE_URL = f"http://homeassistant.local:{DEFAULT_PORT}"
+DEFAULT_BRIDGE_URL = f"http://127.0.0.1:{DEFAULT_PORT}"
 
 # What the appletv-siri-voice bridge and tvOS both expect. Home Assistant's
 # assist pipeline carries exactly this, so nothing in the chain resamples --
