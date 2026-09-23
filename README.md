@@ -2,6 +2,12 @@
 
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/goobis2dmx)
 
+> **Now built into Apple TV Siri Voice.** This passthrough was merged into
+> [marcusadolfsson/appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice)
+> ([#4](https://github.com/marcusadolfsson/appletv-siri-voice/pull/4)), so if you
+> use that integration you already have it — see its *Option 3*. This standalone
+> component still works and is still available if you only want the passthrough.
+
 Talk to **Siri on your Apple TV** through any Home Assistant voice satellite —
 live, while you're still speaking.
 
