@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+  <!-- TV -->
+  <path d="M300 230 H780 Q860 230 860 310 V610 Q860 690 780 690 H220 Q140 690 140 610 V310 Q140 230 220 230" stroke-width="72"/>
+  <path d="M380 800 H620" stroke-width="72"/>
+  <!-- voice passing through the frame -->
+  <path d="M60 460 H140" stroke-width="56"/>
+  <path d="M300 410 V510" stroke-width="60"/>
+  <path d="M400 350 V570" stroke-width="60"/>
+  <path d="M500 300 V620" stroke="#6103FF" stroke-width="60"/>
+  <path d="M600 350 V570" stroke-width="60"/>
+  <path d="M700 410 V510" stroke-width="60"/>
+</svg>
