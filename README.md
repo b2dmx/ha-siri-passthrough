@@ -1,70 +1,62 @@
-# Siri Passthrough
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="custom_components/siri_passthrough/brand/dark_icon@2x.png">
+    <img src="custom_components/siri_passthrough/brand/icon@2x.png" width="140" alt="Siri Passthrough logo">
+  </picture>
+</p>
 
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/goobis2dmx)
+<h1 align="center">Siri Passthrough</h1>
 
-> **Now built into Apple TV Siri Voice.** This passthrough was merged into
-> [marcusadolfsson/appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice)
-> ([#4](https://github.com/marcusadolfsson/appletv-siri-voice/pull/4)), so if you
-> use that integration you already have it — see its *Option 3*. This standalone
-> component still works and is still available if you only want the passthrough.
+<p align="center"><b>Talk to Siri on your Apple TV through any Home Assistant voice satellite, live.</b></p>
 
-Talk to **Siri on your Apple TV** through any Home Assistant voice satellite —
-live, while you're still speaking.
+<p align="center">
+  <a href="https://hacs.xyz"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white" alt="HACS Custom"></a>
+  <a href="https://ko-fi.com/goobis2dmx"><img src="https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white" alt="Support on Ko-fi"></a>
+</p>
 
-Home Assistant can already send Siri a *transcript*: recognize your speech, then
-read it back through text-to-speech. It works, but it isn't quick.
+A Home Assistant integration. Your voice goes straight to Siri while you're still talking, with no transcribe-then-speak delay.
 
-This adds a speech-to-text option that never transcribes anything. It passes
-your voice straight through to Siri while you are still talking.
+> Also built into [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice) (*Option 3*). Use this standalone version if you only want the passthrough.
 
-## Requirements
+## What it does
 
-- An Apple TV on tvOS 12 or later, on the same network
-- Home Assistant 2024.6 or newer, with
-  [HACS](https://hacs.xyz/docs/use/download/download/) installed
-- The [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice)
-  bridge add-on, 1.0.2 or newer — the **[setup guide](docs/setup.md)** walks
-  through installing and pairing it
-- An iPhone or iPad, to pair the bridge in the **Home** app
+- **Streams your voice to Siri** as you speak. Siri answers on the TV.
+- **One pipeline for both:** Siri while the Apple TV is on, normal Assist otherwise.
+- **Tells you what broke** in **Repairs**, instead of silently doing nothing.
 
-## Install
+## Installation
 
-1. HACS → ⋮ → **Custom repositories** → add this repo as an **Integration**
-2. Install, restart Home Assistant
-3. **Settings → Devices & Services → Add Integration → Siri Passthrough**
+You need an Apple TV (tvOS 12+), Home Assistant 2024.6+, the [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice) bridge add-on (1.0.2+), and an iPhone or iPad to pair it.
 
-**[Full setup guide →](docs/setup.md)**
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=b2dmx&repository=ha-siri-passthrough&category=integration)
 
-## Use it
+1. Open in HACS (button above), download **Siri Passthrough**, restart.
+2. **Settings → Devices & services → Add integration → Siri Passthrough**. The bridge address fills in for you.
 
-Point a satellite at the pipeline and hold its dedicated mic button. Siri answers on the
-TV.
+## Onboarding
 
-If anything in the chain breaks later — it shows up in **Repairs** saying why,
-rather than silently doing nothing.
+1. **Bridge:** install the add-on, then pair it in the iPhone **Home** app as a **Voice Remote** using the code from the add-on log.
+2. **Integration:** add it (above).
+3. **Pipeline:** **Settings → Voice assistants → Add assistant**. Speech-to-text: *Siri passthrough*. Conversation agent: *Siri passthrough (silent)*.
+4. Point a satellite at the pipeline and hold its mic button.
 
-## One pipeline for both
+## Tips
 
-Optional. Under **Configure**, set an entity and the states it should be in —
-`media_player.apple_tv` being `on`. While conditions pass, the mic goes to
-Siri; otherwise the same audio becomes an ordinary Assist command.
+- Route by state under **Configure**, e.g. `media_player.apple_tv` is `on, idle, playing, paused`. Routing adds no delay.
+- Leave the add-on's `expose_control_api` **off**. It isn't needed and exposes the TV to your LAN.
+- The Apple TV must be awake. One activation at a time, and no transcript comes back.
+- Satellite talking over Siri? The conversation agent isn't set to *Siri passthrough (silent)*.
 
-A state read taken before any audio is consumed, so the Siri path
-is exactly as fast with routing on as off.
+## More
 
-## Limitations
+[Full setup guide →](docs/setup.md) · [Changelog →](CHANGELOG.md)
 
-- One activation at a time, across all Apple TVs if multiple paired.
-- No transcript comes back; Siri replies on the TV, not in Home Assistant
-- The Apple TV has to be awake
+Credit to [marcusadolfsson/appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice) for the HomeKit bridge.
 
-## Credits
+---
 
-The hard part — HomeKit Target Control, pairing, and the data stream that
-carries Siri audio — is
-[marcusadolfsson/appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice).
-
-Built with [Claude Code](https://claude.com/claude-code). Not affiliated with
-Apple or Home Assistant.
-
-[MIT](LICENSE) · [Changelog](CHANGELOG.md)
+<p align="center">
+  <a href="LICENSE">MIT</a> · <a href="https://ko-fi.com/goobis2dmx">Support on Ko-fi</a> · Not affiliated with Apple or Home Assistant<br><br>
+  Siri Passthrough v0.4.2 by Goobis<br>
+  AI was used to help develop this application
+</p>
