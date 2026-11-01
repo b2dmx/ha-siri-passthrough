@@ -1,11 +1,9 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="custom_components/siri_passthrough/brand/dark_icon@2x.png">
-    <img src="custom_components/siri_passthrough/brand/icon@2x.png" width="140" alt="Siri Passthrough logo">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.png">
+    <img src="docs/logo.png" height="120" alt="Siri Passthrough">
   </picture>
 </p>
-
-<h1 align="center">Siri Passthrough</h1>
 
 <p align="center"><b>Talk to Siri on your Apple TV through any Home Assistant voice satellite, live.</b></p>
 
