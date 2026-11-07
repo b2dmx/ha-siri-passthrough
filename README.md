@@ -14,7 +14,10 @@
 
 A Home Assistant integration. Your voice goes straight to Siri while you're still talking, with no transcribe-then-speak delay.
 
-> Also built into [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice) (*Option 3*). Use this standalone version if you only want the passthrough.
+> [!IMPORTANT]
+> **Most people should install [appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice) instead.** Everything here (routing, speech-to-text, the silent agent) was merged into it, and it is the maintained version.
+>
+> This repo is not a replacement. It has no HomeKit bridge of its own and only works with the appletv-siri-voice bridge add-on installed. It remains as a standalone option for anyone who wants just the passthrough.
 
 ## What it does
 
