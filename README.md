@@ -54,6 +54,10 @@ You need an Apple TV (tvOS 12+), Home Assistant 2024.6+, the [appletv-siri-voice
 
 Credit to [marcusadolfsson/appletv-siri-voice](https://github.com/marcusadolfsson/appletv-siri-voice) for the HomeKit bridge.
 
+## License
+
+The code is [MIT](LICENSE). The Siri Passthrough logo and icons (`brand-source/`, the `brand/` folder in the integration, and the logo images in `docs/`) are © Goobis, all rights reserved. They are not covered by the MIT license, so please don't reuse them without permission.
+
 ---
 
 <p align="center">
